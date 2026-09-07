@@ -79,6 +79,13 @@ jobs:
     - name: Checkout code
       uses: crashappsec/action-checkout@main
       with:
+        # Upstream pins actions/checkout@v1 on THIS job only: v1 is shell-based and
+        # leaves a detached HEAD, so the step below can run
+        #   git fetch origin main:main ...
+        # legally. action-checkout does the v4-style `checkout -B main`, which makes
+        # refs/heads/main the checked-out branch and the fetch then fails with
+        # 'refusing to fetch into branch'. A full SHA restores the detached HEAD.
+        ref: ${{ github.sha }}
         chalk: ${{ env.CHALK_ON }}
         profile: ${{ inputs.profile || 'curiosity-tests-racecar' }}
         observables_continue_on_error: false
