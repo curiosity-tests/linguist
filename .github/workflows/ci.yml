@@ -86,6 +86,12 @@ jobs:
         # refs/heads/main the checked-out branch and the fetch then fails with
         # 'refusing to fetch into branch'. A full SHA restores the detached HEAD.
         ref: ${{ github.sha }}
+        # racecar: full history. action-checkout defaults to a depth-1 clone, but
+        # `Fetch grammar submodules` fetches named refs and the test suite walks
+        # history through Rugged, which then fails with
+        #   Rugged::OdbError: object not found - no match for id (7dbcffcf...)
+        # fetch-depth changes how much history is present, not what is built.
+        fetch-depth: 0
         chalk: ${{ env.CHALK_ON }}
         profile: ${{ inputs.profile || 'curiosity-tests-racecar' }}
         observables_continue_on_error: false
